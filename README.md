@@ -18,14 +18,14 @@ One the plugin has been installed, it may be enabled inside your Gruntfile with 
 grunt.loadNpmTasks('grunt-nette-basepath');
 ```
 
-## The "netteBasepath" task
+## The "netteBasePath" task
 
 ### Overview
-In your project's Gruntfile, add a section named `netteBasepath` to the data object passed into `grunt.initConfig()`.
+In your project's Gruntfile, add a section named `netteBasePath` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
-  netteBasepath: {
+  netteBasePath: {
     basePath: 'www',
     options: {
       // removeFromPath: ['app/'] // unix
