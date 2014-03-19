@@ -7,6 +7,21 @@
  * Works with: github.com/yeoman/grunt-usemin
  *
  * Update paths for concat, uglify and cssmin where is nette variable $basePath
+ *
+ * Use:
+
+    grunt.initConfig({
+      ...
+
+      netteBasePath: {
+        basePath: 'www',
+        options: {
+          removeFromPath: ['app/templates/'] // Array of path to remove
+        }
+      },
+      ...
+    });
+
  */
 
 var fs = require('fs'),
@@ -23,7 +38,7 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('netteBasePath', 'In list of files to prepare replace $basePath with real path', function() {
     var options = this.options();
     var basePath = this.data;
-    var replacePath, dataFixed, clearItem, path;
+    var replacePath, dataFixed, clearItem;
     var concatFixed = {}, uglifyFixed = {}, cssminFixed = {};
     var concat = grunt.config('concat') || {},
       uglify = grunt.config('uglify') || {},
@@ -33,41 +48,80 @@ module.exports = function(grunt) {
       return path.replace('{$basePath}', basePath);
     };
 
-    grunt.log.writeln('[Nette replace $basePath => '+ basePath +']');
+    var index;
+
+    grunt.log.writeln('[Replace Nette {$basePath} => '+ basePath +']');
     grunt.log.writeln('[Nette fix usemin usage real folders]');
 
     // concat
-    for(path in concat){
-      replacePath = clearBasePath(path);
-      dataFixed = [];
-      concat[path].forEach(function(item){
-        clearItem = clearBasePath(item);
-        if (options.removeFromPath){
-          options.removeFromPath.forEach(function(whatRemove){
-            clearItem = clearItem.replace(whatRemove, '');
-          });
-        }
-        dataFixed.push(clearItem);
-      });
-      concatFixed[replacePath] = dataFixed;
+    grunt.log.debug('- step concat');
+    grunt.log.debug(inspect(concat));
+
+    if (concat.generated && concat.generated.files){
+      concatFixed.generated = {files:[]};
+      for(index in concat.generated.files){
+        // grunt.log.debug(inspect(concat.generated.files[index].dest));
+        // grunt.log.debug(inspect(concat.generated.files[index].src));
+        concatFixed.generated.files[index] = {};
+        concatFixed.generated.files[index].dest = clearBasePath(concat.generated.files[index].dest)
+        dataFixed = [];
+        concat.generated.files[index].src.forEach(function(item){
+          clearItem = clearBasePath(item);
+          if (options.removeFromPath){
+            options.removeFromPath.forEach(function(whatRemove){
+              whatRemove = whatRemove.replace('/', path.sep);
+              clearItem = clearItem.replace(whatRemove, '');
+            });
+          }
+          dataFixed.push(clearItem);
+        });
+
+        concatFixed.generated.files[index].src = dataFixed;
+      }
+      grunt.config('concat', concatFixed);
     }
-    grunt.config('concat', concatFixed);
 
     // uglify
-    for(path in uglify){
-      replacePath = clearBasePath(path);
-      dataFixed = clearBasePath(uglify[path]);
-      uglifyFixed[replacePath] = dataFixed;
+    // todo: refacotr to function
+    grunt.log.debug('- step uglify');
+    grunt.log.debug(inspect(uglify));
+
+    if (uglify.generated && uglify.generated.files){
+      uglifyFixed.generated = {files:[]};
+      for(index in uglify.generated.files){
+        uglifyFixed.generated.files[index] = {};
+        uglifyFixed.generated.files[index].dest = clearBasePath(uglify.generated.files[index].dest)
+        dataFixed = [];
+        uglify.generated.files[index].src.forEach(function(item){
+          clearItem = clearBasePath(item);
+          dataFixed.push(clearItem);
+        });
+
+        uglifyFixed.generated.files[index].src = dataFixed;
+      }
+      grunt.config('uglify', uglifyFixed);
     }
-    grunt.config('uglify', uglifyFixed);
 
     // css min
-    for(path in cssmin){
-      replacePath = clearBasePath(path);
-      dataFixed = clearBasePath(cssmin[path]);
-      cssminFixed[replacePath] = dataFixed;
+    // todo: refacotr to function
+    grunt.log.debug('- step cssmin');
+    grunt.log.debug(inspect(cssmin));
+
+    if (cssmin.generated && cssmin.generated.files){
+      cssminFixed.generated = {files:[]};
+      for(index in cssmin.generated.files){
+        cssminFixed.generated.files[index] = {};
+        cssminFixed.generated.files[index].dest = clearBasePath(cssmin.generated.files[index].dest)
+        dataFixed = [];
+        cssmin.generated.files[index].src.forEach(function(item){
+          clearItem = clearBasePath(item);
+          dataFixed.push(clearItem);
+        });
+
+        cssminFixed.generated.files[index].src = dataFixed;
+      }
+      grunt.config('cssmin', cssminFixed);
     }
-    grunt.config('cssmin', cssminFixed);
 
     // log a bit what was update in config
     grunt.log.subhead('Configuration is now:')

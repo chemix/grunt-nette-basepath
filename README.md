@@ -4,7 +4,7 @@
 
 
 ## Getting Started
-This plugin requires Grunt `~0.4.1`
+This plugin requires Grunt `~0.4.4`
 
 If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
@@ -23,17 +23,30 @@ grunt.loadNpmTasks('grunt-nette-basepath');
 ### Overview
 In your project's Gruntfile, add a section named `netteBasePath` to the data object passed into `grunt.initConfig()`.
 
+full example on [github.com/chemix/Nette-Grunt](https://github.com/chemix/Nette-Grunt)
+
 ```js
 grunt.initConfig({
+  ...
   netteBasePath: {
     basePath: 'www',
     options: {
-      // removeFromPath: ['app/'] // unix
-      removeFromPath: ['app\\'] // win
+      removeFromPath: ['app/templates/']
     }
   },
+  ...
 })
 ```
 
+```coffee
+  ...
+  netteBasePath:
+    basePath: 'www'
+    options:
+      removeFromPath: ['app/template/']
+  ...
+```
+
 ## Release History
+- 0.2.0: Update for grunt-usemin 2.1.0
 - 0.1.0: Initial release
