@@ -43,6 +43,9 @@ module.exports = function(grunt) {
     var concat = grunt.config('concat') || {},
       uglify = grunt.config('uglify') || {},
       cssmin = grunt.config('cssmin') || { compress: { files: {} }};
+    if(concat.options) {
+        concatFixed.options = concat.options;
+    }
 
     var clearBasePath = function(path){
       return path.replace('{$basePath}', basePath);
