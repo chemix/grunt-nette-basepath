@@ -1,7 +1,7 @@
 {
   "name": "grunt-nette-basepath",
   "description": "Grunt plugin to update paths for concat, uglify and cssmin where is nette variable $basePath",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "homepage": "https://github.com/chemix/grunt-nette-basepath",
   "author": {
     "name": "Honza Černý",
