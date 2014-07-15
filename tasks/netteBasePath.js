@@ -46,6 +46,12 @@ module.exports = function(grunt) {
     if(concat.options) {
         concatFixed.options = concat.options;
     }
+    if(uglify.options) {
+      uglifyFixed.options = uglify.options;
+    }
+    if(cssmin.options) {
+      cssminFixed.options = cssmin.options;
+    }
 
     var clearBasePath = function(path){
       return path.replace('{$basePath}', basePath);
