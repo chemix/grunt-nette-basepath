@@ -13,12 +13,21 @@
     grunt.initConfig({
       ...
 
-      netteBasePath: {
-        basePath: 'www',
-        options: {
-          removeFromPath: ['app/templates/'] // Array of path to remove
-        }
-      },
+        netteBasePath: {
+            basePath: {
+                basePath: 'www',
+                options: {
+                    removeFromPath: ['app/templates/']
+                }
+            },
+            other: {
+                search: '{$inc}',
+                basePath: '/login',
+                options: {
+                    removeFromPath: ['app/templates/']
+                }
+            }
+        },
       ...
     });
 
