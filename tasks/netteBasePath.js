@@ -37,7 +37,8 @@ module.exports = function(grunt) {
 
   grunt.registerMultiTask('netteBasePath', 'In list of files to prepare replace $basePath with real path', function() {
     var options = this.options();
-    var basePath = this.data;
+    var basePath = this.data.basePath;
+    var search = this.data.search;
     var replacePath, dataFixed, clearItem;
     var concatFixed = {}, uglifyFixed = {}, cssminFixed = {};
     var concat = grunt.config('concat') || {},
@@ -53,8 +54,13 @@ module.exports = function(grunt) {
       cssminFixed.options = cssmin.options;
     }
 
-    var clearBasePath = function(path){
-      return path.replace('{$basePath}', basePath);
+    // default
+    if (search == "") {
+      search = '{$basePath}';
+    }
+
+    var clearBasePath = function(path,search){
+      return path.replace(search, basePath);
     };
 
     var index;
@@ -72,10 +78,10 @@ module.exports = function(grunt) {
         // grunt.log.debug(inspect(concat.generated.files[index].dest));
         // grunt.log.debug(inspect(concat.generated.files[index].src));
         concatFixed.generated.files[index] = {};
-        concatFixed.generated.files[index].dest = clearBasePath(concat.generated.files[index].dest)
+        concatFixed.generated.files[index].dest = clearBasePath(concat.generated.files[index].dest,search)
         dataFixed = [];
         concat.generated.files[index].src.forEach(function(item){
-          clearItem = clearBasePath(item);
+          clearItem = clearBasePath(item,search);
           if (options.removeFromPath){
             options.removeFromPath.forEach(function(whatRemove){
               whatRemove = whatRemove.replace('/', path.sep);
@@ -99,10 +105,10 @@ module.exports = function(grunt) {
       uglifyFixed.generated = {files:[]};
       for(index in uglify.generated.files){
         uglifyFixed.generated.files[index] = {};
-        uglifyFixed.generated.files[index].dest = clearBasePath(uglify.generated.files[index].dest)
+        uglifyFixed.generated.files[index].dest = clearBasePath(uglify.generated.files[index].dest,search)
         dataFixed = [];
         uglify.generated.files[index].src.forEach(function(item){
-          clearItem = clearBasePath(item);
+          clearItem = clearBasePath(item,search);
           dataFixed.push(clearItem);
         });
 
@@ -120,10 +126,10 @@ module.exports = function(grunt) {
       cssminFixed.generated = {files:[]};
       for(index in cssmin.generated.files){
         cssminFixed.generated.files[index] = {};
-        cssminFixed.generated.files[index].dest = clearBasePath(cssmin.generated.files[index].dest)
+        cssminFixed.generated.files[index].dest = clearBasePath(cssmin.generated.files[index].dest,search)
         dataFixed = [];
         cssmin.generated.files[index].src.forEach(function(item){
-          clearItem = clearBasePath(item);
+          clearItem = clearBasePath(item,search);
           dataFixed.push(clearItem);
         });
 
