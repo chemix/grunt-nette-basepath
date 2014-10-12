@@ -4,7 +4,7 @@
 
 
 ## Getting Started
-This plugin requires Grunt `~0.4.4`
+This plugin requires Grunt `~0.4.4` and use-min `^2.4.0`
 
 If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
@@ -29,9 +29,11 @@ full example on [github.com/chemix/Nette-Grunt](https://github.com/chemix/Nette-
 grunt.initConfig({
   ...
   netteBasePath: {
-    basePath: 'www',
-    options: {
-      removeFromPath: ['app/templates/']
+    task: {
+      basePath: 'www',
+      options: {
+        removeFromPath: ['app/templates/']
+      }
     }
   },
   ...
@@ -41,12 +43,32 @@ grunt.initConfig({
 ```coffee
   ...
   netteBasePath:
-    basePath: 'www'
-    options:
-      removeFromPath: ['app/template/']
+    task:
+      basePath: 'www'
+      options:
+        removeFromPath: ['app/template/']
   ...
 ```
 
+
+Multiple replacements
+
+```coffee
+  ...
+  netteBasePath:
+    taskCore:
+      basePath: 'www'
+      options:
+        removeFromPath: ['app/template/']
+    taskLibs:
+      basePath: 'www/components'
+      options:
+        searchPattern: '{$incPath}'
+  ...
+```
+
+
 ## Release History
+- 0.3.0: Support for another replace path search string, multiple replaces
 - 0.2.0: Update for grunt-usemin 2.1.0
 - 0.1.0: Initial release
