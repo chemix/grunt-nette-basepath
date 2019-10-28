@@ -10,9 +10,8 @@
  *
  * Use:
 
- grunt.initConfig({
-      ...
-
+    grunt.initConfig({
+        ...
         netteBasePath: {
             task: {
                 basePath: 'www',
@@ -28,8 +27,7 @@
                 }
             }
         },
-
-      ...
+        ...
     });
 
  */
@@ -40,6 +38,10 @@ var fs = require('fs'),
 
 var inspect = function (obj) {
     return util.inspect(obj, false, 4, true);
+};
+
+var fixOsPath = function (stringPath) {
+    return stringPath.replace(/\//g, path.sep);
 };
 
 module.exports = function (grunt) {
@@ -57,6 +59,9 @@ module.exports = function (grunt) {
         var concat = grunt.config('concat') || {},
             uglify = grunt.config('uglify') || {},
             cssmin = grunt.config('cssmin') || {compress: {files: {}}};
+
+        // fix os folder separator
+        options.removeFromPath = options.removeFromPath.map(fixOsPath);
 
         // set origin configs for task
         if (concat.options) {
@@ -95,8 +100,6 @@ module.exports = function (grunt) {
         if (concat.generated && concat.generated.files) {
             concatFixed.generated = {files: []};
             for (index in concat.generated.files) {
-                // grunt.log.debug(inspect(concat.generated.files[index].dest));
-                // grunt.log.debug(inspect(concat.generated.files[index].src));
                 concatFixed.generated.files[index] = {};
                 concatFixed.generated.files[index].dest = clearBasePath(concat.generated.files[index].dest)
                 dataFixed = [];
@@ -104,7 +107,6 @@ module.exports = function (grunt) {
                     clearItem = clearBasePath(item);
                     if (options.removeFromPath) {
                         options.removeFromPath.forEach(function (whatRemove) {
-                            whatRemove = whatRemove.replace('/', path.sep);
                             clearItem = clearItem.replace(whatRemove, '');
                         });
                     }
